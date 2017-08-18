@@ -1,3 +1,12 @@
+<a name="0.0.6"></a>
+## 0.0.6 (2017-08-18)
+
+* 0.0.6 ([b8756fb](https://github.com/wessberg/ModuleUtil/commit/b8756fb))
+* Added 'module' as a known built-in ([8b684dd](https://github.com/wessberg/ModuleUtil/commit/8b684dd))
+* Bumped version ([e9c0280](https://github.com/wessberg/ModuleUtil/commit/e9c0280))
+
+
+
 <a name="0.0.5"></a>
 ## 0.0.5 (2017-08-18)
 

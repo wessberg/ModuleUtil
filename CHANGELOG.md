@@ -1,3 +1,12 @@
+<a name="0.0.8"></a>
+## 0.0.8 (2017-08-18)
+
+* 0.0.8 ([b186818](https://github.com/wessberg/ModuleUtil/commit/b186818))
+* Bumped version ([c7a84f8](https://github.com/wessberg/ModuleUtil/commit/c7a84f8))
+* Use Set instead of InsertionOrderedSet. Sets are always Insertion-ordered ([2a25a15](https://github.com/wessberg/ModuleUtil/commit/2a25a15))
+
+
+
 <a name="0.0.7"></a>
 ## 0.0.7 (2017-08-18)
 

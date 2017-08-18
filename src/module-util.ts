@@ -45,7 +45,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * The default modules that are baked in to the environment (in this case Node)
 	 * @type {string[]}
 	 */
-	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util", "module", "vm"];
+	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util", "module", "vm", "zlib", "constants"];
 	/**
 	 * The total amount of built in modules
 	 * @type {InsertionOrderedSet<string>}
@@ -107,6 +107,14 @@ export class ModuleUtil implements IModuleUtil {
 	 */
 	private traceLib (libName: string, from: string): string {
 		const directory = this.resolveNodeModuleDirectory(libName, from);
+
+		// If the "directory" actually points to a concrete file, this is an import of a concrete script within a library.
+		if (!this.fileLoader.isDirectorySync(directory)) {
+			const [scriptExists, scriptPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(directory, this.allowedExtensions, this.excludedExtensions);
+			if (!scriptExists) throw new ReferenceError(`${this.constructor.name} attempted to resolve file: ${directory} but couldn't`);
+			return scriptPath!;
+		}
+
 		const packageJSONPath = this.resolvePackageJson(directory);
 		const entry = this.resolveLibEntry(packageJSONPath);
 
@@ -190,8 +198,8 @@ export class ModuleUtil implements IModuleUtil {
 		// If the path is a directory, return it.
 		if (this.fileLoader.isDirectorySync(absolutePath)) return absolutePath;
 
-		// If the file already has an extension (and it isn't excluded), return that one if it exists.
-		if (this.pathUtil.hasExtension(absolutePath) && !this.excludedExtensions.has(this.pathUtil.takeExtension(absolutePath))) {
+		// If the file already has an extension (and it isn't excluded and is one of the supported ones), return that one if it exists.
+		if (this.pathUtil.hasExtension(absolutePath) && this.allowedExtensions.has(this.pathUtil.takeExtension(absolutePath)) && !this.excludedExtensions.has(this.pathUtil.takeExtension(absolutePath))) {
 			if (!this.fileLoader.existsSync(absolutePath)) {
 				throw new ReferenceError(errorMessage);
 			}

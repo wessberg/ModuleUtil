@@ -82,20 +82,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @returns {string}
 	 */
 	public resolvePath (filePath: string, from: string = process.cwd()): string {
-
-		// Obtain an absolute path
-		const absolute = this.pathUtil.makeAbsolute(filePath, from, true);
-
-		// See if it has already been traced
-		const cached = ModuleUtil.RESOLVED_PATHS.get(absolute);
-		if (cached != null) return cached;
-
-		// Trace the path
-		const traced = this.traceFullPath(absolute, from);
-
-		// Cache it
-		ModuleUtil.RESOLVED_PATHS.set(absolute, traced);
-		return traced;
+		return this.traceFullPath(filePath, from);
 	}
 
 	/**
@@ -105,16 +92,30 @@ export class ModuleUtil implements IModuleUtil {
 	 * @returns {string}
 	 */
 	private traceLib (libName: string, from: string): string {
+		// If the path is to a built-in module (such as 'fs'), return it immediately.
+		if (this.builtInModules.has(libName)) return libName;
+
+		// Resolve the node_modules directory
 		const directory = this.resolveNodeModuleDirectory(libName, from);
 
-		// If the "directory" actually points to a concrete file, this is an import of a concrete script within a library.
-		if (!this.fileLoader.isDirectorySync(directory)) {
-			const [scriptExists, scriptPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(directory, this.allowedExtensions, this.excludedExtensions);
-			if (!scriptExists) throw new ReferenceError(`${this.constructor.name} attempted to resolve file: ${directory} but couldn't`);
-			return scriptPath!;
-		}
+		// Even though a directory may exist with this name, there may be a file within the same directory of the same name
+		const [scriptExists, scriptPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(directory, this.allowedExtensions, this.excludedExtensions);
+		if (scriptExists) return scriptPath!;
 
 		const packageJSONPath = this.resolvePackageJson(directory);
+
+		// If no package.json file were found, look for an index file within the directory.
+		if (packageJSONPath == null) {
+			// See if an 'index' exists within that path.
+			const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(directory, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
+
+			// If it does, return it.
+			if (indexExists) return indexPath!;
+			else {
+				// Otherwise throw an error.
+				throw new ReferenceError(`${this.constructor.name} could not find a package.json file within directory: ${directory}`);
+			}
+		}
 		const entry = this.resolveLibEntry(packageJSONPath);
 
 		// If the file already has an extension and exists - return it.
@@ -153,12 +154,10 @@ export class ModuleUtil implements IModuleUtil {
 	/**
 	 * Resolves a package.json file within the provided library directory.
 	 * @param {string} libDirectory
-	 * @returns {string}
+	 * @returns {string?}
 	 */
-	private resolvePackageJson (libDirectory: string): string {
-		const match = this.traceUp("package.json", libDirectory);
-		if (match == null) throw new ReferenceError(`${this.constructor.name} could not trace a package.json file within directory: ${libDirectory}`);
-		return match;
+	private resolvePackageJson (libDirectory: string): string|undefined {
+		return this.traceUp("package.json", libDirectory);
 	}
 
 	/**
@@ -179,11 +178,30 @@ export class ModuleUtil implements IModuleUtil {
 	private traceFullPath (filePath: string, from: string): string {
 		// If the filePath is a directory, expect it to point to a library within node_modules.
 		if (this.pathUtil.isLib(filePath)) {
-			// If the path is to a built-in module (such as 'fs'), return it immediately.
-			if (this.builtInModules.has(filePath)) return filePath;
-			return this.traceLib(filePath, from);
+			// See if exists within the cache first
+			const cachedLib = ModuleUtil.RESOLVED_PATHS.get(filePath);
+			if (cachedLib != null) return cachedLib;
+
+			// Trace the full path
+			const tracedLib = this.traceLib(filePath, from);
+
+			// Cache it
+			ModuleUtil.RESOLVED_PATHS.set(filePath, tracedLib);
 		}
-		return this.findFullPath(filePath);
+
+		// Make sure that the path is absolute
+		const absolute = this.pathUtil.makeAbsolute(filePath, from, true);
+
+		// See if exists within the cache first
+		const cachedFullPath = ModuleUtil.RESOLVED_PATHS.get(absolute);
+		if (cachedFullPath != null) return cachedFullPath;
+
+		// Trace the full path
+		const tracedFullPath = this.findFullPath(absolute);
+
+		// Cache it
+		ModuleUtil.RESOLVED_PATHS.set(absolute, tracedFullPath);
+		return tracedFullPath;
 	}
 
 	/**
@@ -194,11 +212,8 @@ export class ModuleUtil implements IModuleUtil {
 	private findFullPath (absolutePath: string): string {
 		const errorMessage = `${this.constructor.name} could not find a file on disk with the path: ${absolutePath}`;
 
-		// If the path is a directory, return it.
-		if (this.fileLoader.isDirectorySync(absolutePath)) return absolutePath;
-
-		// If the file already has an extension (and it isn't excluded and is one of the supported ones), return that one if it exists.
-		if (this.pathUtil.hasExtension(absolutePath) && this.allowedExtensions.has(this.pathUtil.takeExtension(absolutePath)) && !this.excludedExtensions.has(this.pathUtil.takeExtension(absolutePath))) {
+		// If it isn't a directory and the file already has an extension (and it isn't excluded and is one of the supported ones), return that one if it exists.
+		if (!this.fileLoader.isDirectorySync(absolutePath) && this.pathUtil.hasExtension(absolutePath) && this.allowedExtensions.has(this.pathUtil.takeExtension(absolutePath)) && !this.excludedExtensions.has(this.pathUtil.takeExtension(absolutePath))) {
 			if (!this.fileLoader.existsSync(absolutePath)) {
 				throw new ReferenceError(errorMessage);
 			}
@@ -208,8 +223,16 @@ export class ModuleUtil implements IModuleUtil {
 		// Otherwise, try to locate it on disk
 		const [exists, path] = this.fileLoader.existsWithFirstMatchedExtensionSync(absolutePath, this.allowedExtensions, this.excludedExtensions);
 
-		// If it doesn't exist, throw an error
-		if (!exists) throw new ReferenceError(errorMessage);
+		if (!exists) {
+			// See if an 'index' exists within that path.
+			const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(absolutePath, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
+
+			// If it does, return it.
+			if (indexExists) return indexPath!;
+
+			// Otherwise, throw an exception.
+			throw new ReferenceError(errorMessage);
+		}
 
 		// Otherwise, return the path
 		return path!;

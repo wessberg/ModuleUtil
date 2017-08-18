@@ -1,3 +1,13 @@
+<a name="0.0.7"></a>
+## 0.0.7 (2017-08-18)
+
+* 0.0.7 ([a78938b](https://github.com/wessberg/ModuleUtil/commit/a78938b))
+* Added 'constants' as a known builtin module ([5cf1800](https://github.com/wessberg/ModuleUtil/commit/5cf1800))
+* Added 'vm' as a known built in module ([8b8412b](https://github.com/wessberg/ModuleUtil/commit/8b8412b))
+* Bumped version ([adba750](https://github.com/wessberg/ModuleUtil/commit/adba750))
+
+
+
 <a name="0.0.6"></a>
 ## 0.0.6 (2017-08-18)
 

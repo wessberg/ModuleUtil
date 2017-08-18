@@ -1,3 +1,12 @@
+<a name="0.0.5"></a>
+## 0.0.5 (2017-08-18)
+
+* 0.0.5 ([eebbc6d](https://github.com/wessberg/ModuleUtil/commit/eebbc6d))
+* Added .tsx as default allowed extension ([2129f8e](https://github.com/wessberg/ModuleUtil/commit/2129f8e))
+* Bumped version ([1bdf5bf](https://github.com/wessberg/ModuleUtil/commit/1bdf5bf))
+
+
+
 <a name="0.0.4"></a>
 ## 0.0.4 (2017-08-18)
 

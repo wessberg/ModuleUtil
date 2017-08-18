@@ -42,6 +42,12 @@ export class ModuleUtil implements IModuleUtil {
 	private static readonly DEFAULT_PACKAGE_FIELDS: (keyof IPackageJson)[] = ["module", "es2015", "jsnext:main", "main"];
 
 	/**
+	 * The default modules that are baked in to the environment (in this case Node)
+	 * @type {string[]}
+	 */
+	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util"];
+
+	/**
 	 * The allowed file extensions when resolving files.
 	 * @type {InsertionOrderedSet<string>}
 	 */
@@ -52,6 +58,12 @@ export class ModuleUtil implements IModuleUtil {
 	 * @type {InsertionOrderedSet<string>}
 	 */
 	private readonly excludedExtensions: InsertionOrderedSet<string>;
+
+	/**
+	 * The total amount of built in modules
+	 * @type {InsertionOrderedSet<string>}
+	 */
+	public readonly builtInModules: InsertionOrderedSet<string>;
 
 	/**
 	 * The package fields to resolve libraries from
@@ -65,6 +77,7 @@ export class ModuleUtil implements IModuleUtil {
 		this.allowedExtensions = new InsertionOrderedSet([...ModuleUtil.DEFAULT_ALLOWED_EXTENSIONS, ...this.takeExtraExtensions(options)]);
 		this.excludedExtensions = new InsertionOrderedSet(ModuleUtil.DEFAULT_EXCLUDED_EXTENSIONS);
 		this.packageFields = new InsertionOrderedSet([...ModuleUtil.DEFAULT_PACKAGE_FIELDS, ...this.takeExtraPackageFields(options)]);
+		this.builtInModules = new InsertionOrderedSet([...ModuleUtil.DEFAULT_BUILT_IN_MODULES, ...this.takeExtraBuiltInModules(options)]);
 	}
 
 	/**
@@ -163,6 +176,8 @@ export class ModuleUtil implements IModuleUtil {
 	private traceFullPath (filePath: string, from: string): string {
 		// If the filePath is a directory, expect it to point to a library within node_modules.
 		if (this.pathUtil.isLib(filePath)) {
+			// If the path is to a built-in module (such as 'fs'), return it immediately.
+			if (this.builtInModules.has(filePath)) return filePath;
 			return this.traceLib(filePath, from);
 		}
 		return this.findFullPath(filePath);
@@ -215,6 +230,16 @@ export class ModuleUtil implements IModuleUtil {
 	private takeExtraPackageFields (options?: Partial<IModuleUtilOptions>): (keyof IPackageJson)[] {
 		if (options == null || options.extraPackageFields == null) return [];
 		return [...options.extraPackageFields];
+	}
+
+	/**
+	 * Formats additional user-provided names for built-in modules.
+	 * @param {Partial<IModuleUtilOptions>} options
+	 * @returns {string[]}
+	 */
+	private takeExtraBuiltInModules (options?: Partial<IModuleUtilOptions>): string[] {
+		if (options == null || options.extraBuiltInModules == null) return [];
+		return [...options.extraBuiltInModules];
 	}
 
 	/**

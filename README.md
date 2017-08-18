@@ -17,7 +17,7 @@ Simply do: `npm install @wessberg/moduleutil`.
 
 ## What is it
 
-This is a service that can resolve the absolute paths to both files within a Typescript/Javascript project as well as entry files within libraries located in node_modules.
+This is a service that can resolve the absolute paths to both files within a Typescript/Javascript project as well as entry files within libraries located in `node_modules`.
 If you feed it with the path: `babel-core`, it will look for a library named *babel-core* within the nearest `node_modules` folder and resolve the entry point by parsing the `package.json` file within it.
 It will always resolve to an entry point that uses ES modules if necessary, otherwise it will use the entry point listed in the `main` field.
 
@@ -52,6 +52,17 @@ By default, ModuleUtil will parse the following entry point fields within any pa
 ```typescript
 const moduleUtil = new ModuleUtil(fileLoader, pathUtil, {
 	extraPackageFields: ["browser", "something"]
+});
+```
+
+### Built-in modules
+
+If ModuleUtil receives a path that points to a built-in module such as *fs* or *path*, it will simply return that path, rather than attempting to resolve the module within `node_modules` (which wouldn't make sense since it is built-in)
+If you know of more built-in modules than the ones provided by the plugin, you can pass them in as an option:
+
+```typescript
+const moduleUtil = new ModuleUtil(fileLoader, pathUtil, {
+	extraBuiltInModules: ["some-module", "foo"]
 });
 ```
 

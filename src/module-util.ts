@@ -45,7 +45,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * The default modules that are baked in to the environment (in this case Node)
 	 * @type {string[]}
 	 */
-	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util", "module"];
+	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util", "module", "vm"];
 	/**
 	 * The total amount of built in modules
 	 * @type {InsertionOrderedSet<string>}

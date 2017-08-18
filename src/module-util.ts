@@ -4,7 +4,6 @@ import {IModuleUtilOptions} from "./i-module-util-options";
 import {IPathUtil} from "@wessberg/pathutil";
 import {join} from "path";
 import {IPackageJson} from "./i-package-json";
-import {InsertionOrderedSet} from "@wessberg/insertion-ordered-set";
 
 /**
  * A class that helps with working with modules
@@ -48,32 +47,32 @@ export class ModuleUtil implements IModuleUtil {
 	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util", "module", "vm", "zlib", "constants"];
 	/**
 	 * The total amount of built in modules
-	 * @type {InsertionOrderedSet<string>}
+	 * @type {Set<string>}
 	 */
-	public readonly builtInModules: InsertionOrderedSet<string>;
+	public readonly builtInModules: Set<string>;
 	/**
 	 * The allowed file extensions when resolving files.
-	 * @type {InsertionOrderedSet<string>}
+	 * @type {Set<string>}
 	 */
-	private readonly allowedExtensions: InsertionOrderedSet<string>;
+	private readonly allowedExtensions: Set<string>;
 	/**
 	 * The excluded file extensions when resolving files.
-	 * @type {InsertionOrderedSet<string>}
+	 * @type {Set<string>}
 	 */
-	private readonly excludedExtensions: InsertionOrderedSet<string>;
+	private readonly excludedExtensions: Set<string>;
 	/**
 	 * The package fields to resolve libraries from
-	 * @type {InsertionOrderedSet<string>}
+	 * @type {Set<string>}
 	 */
-	private readonly packageFields: InsertionOrderedSet<keyof IPackageJson>;
+	private readonly packageFields: Set<keyof IPackageJson>;
 
 	constructor (private fileLoader: IFileLoader,
 							 private pathUtil: IPathUtil,
 							 options?: Partial<IModuleUtilOptions>) {
-		this.allowedExtensions = new InsertionOrderedSet([...ModuleUtil.DEFAULT_ALLOWED_EXTENSIONS, ...this.takeExtraExtensions(options)]);
-		this.excludedExtensions = new InsertionOrderedSet(ModuleUtil.DEFAULT_EXCLUDED_EXTENSIONS);
-		this.packageFields = new InsertionOrderedSet([...ModuleUtil.DEFAULT_PACKAGE_FIELDS, ...this.takeExtraPackageFields(options)]);
-		this.builtInModules = new InsertionOrderedSet([...ModuleUtil.DEFAULT_BUILT_IN_MODULES, ...this.takeExtraBuiltInModules(options)]);
+		this.allowedExtensions = new Set([...ModuleUtil.DEFAULT_ALLOWED_EXTENSIONS, ...this.takeExtraExtensions(options)]);
+		this.excludedExtensions = new Set(ModuleUtil.DEFAULT_EXCLUDED_EXTENSIONS);
+		this.packageFields = new Set([...ModuleUtil.DEFAULT_PACKAGE_FIELDS, ...this.takeExtraPackageFields(options)]);
+		this.builtInModules = new Set([...ModuleUtil.DEFAULT_BUILT_IN_MODULES, ...this.takeExtraBuiltInModules(options)]);
 	}
 
 	/**

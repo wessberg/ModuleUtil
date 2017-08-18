@@ -1,3 +1,13 @@
+<a name="0.0.4"></a>
+## 0.0.4 (2017-08-18)
+
+* 0.0.4 ([d4cb66a](https://github.com/wessberg/ModuleUtil/commit/d4cb66a))
+* Added a missing typing ([1f08756](https://github.com/wessberg/ModuleUtil/commit/1f08756))
+* Bumped version ([157cd6e](https://github.com/wessberg/ModuleUtil/commit/157cd6e))
+* Refactored ([480c319](https://github.com/wessberg/ModuleUtil/commit/480c319))
+
+
+
 <a name="0.0.3"></a>
 ## 0.0.3 (2017-08-18)
 

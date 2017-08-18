@@ -27,7 +27,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * The default allowed file extensions when resolving files.
 	 * @type {string[]}
 	 */
-	private static readonly DEFAULT_ALLOWED_EXTENSIONS: string[] = [".ts", ".js", ".json"];
+	private static readonly DEFAULT_ALLOWED_EXTENSIONS: string[] = [".ts", ".tsx", ".js", ".json"];
 
 	/**
 	 * The default excluded file extensions when resolving files.

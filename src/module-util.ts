@@ -46,25 +46,21 @@ export class ModuleUtil implements IModuleUtil {
 	 * @type {string[]}
 	 */
 	private static readonly DEFAULT_BUILT_IN_MODULES: string[] = ["fs", "path", "buffer", "assert", "child_process", "cluster", "http", "https", "os", "crypto", "dns", "domain", "events", "net", "process", "punycode", "querystring", "readline", "repl", "stream", "string_decoder", "timers", "tls", "tty", "dgram", "url", "util"];
-
-	/**
-	 * The allowed file extensions when resolving files.
-	 * @type {InsertionOrderedSet<string>}
-	 */
-	private readonly allowedExtensions: InsertionOrderedSet<string>;
-
-	/**
-	 * The excluded file extensions when resolving files.
-	 * @type {InsertionOrderedSet<string>}
-	 */
-	private readonly excludedExtensions: InsertionOrderedSet<string>;
-
 	/**
 	 * The total amount of built in modules
 	 * @type {InsertionOrderedSet<string>}
 	 */
 	public readonly builtInModules: InsertionOrderedSet<string>;
-
+	/**
+	 * The allowed file extensions when resolving files.
+	 * @type {InsertionOrderedSet<string>}
+	 */
+	private readonly allowedExtensions: InsertionOrderedSet<string>;
+	/**
+	 * The excluded file extensions when resolving files.
+	 * @type {InsertionOrderedSet<string>}
+	 */
+	private readonly excludedExtensions: InsertionOrderedSet<string>;
 	/**
 	 * The package fields to resolve libraries from
 	 * @type {InsertionOrderedSet<string>}

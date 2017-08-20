@@ -1,3 +1,12 @@
+<a name="0.0.11"></a>
+## 0.0.11 (2017-08-20)
+
+* 0.0.11 ([270d288](https://github.com/wessberg/ModuleUtil/commit/270d288))
+* Bumped dependency on Typescript ([ce131b0](https://github.com/wessberg/ModuleUtil/commit/ce131b0))
+* Bumped version ([9c5c716](https://github.com/wessberg/ModuleUtil/commit/9c5c716))
+
+
+
 <a name="0.0.10"></a>
 ## 0.0.10 (2017-08-18)
 

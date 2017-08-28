@@ -22,17 +22,19 @@ export class ModuleUtil implements IModuleUtil {
 	 */
 	private static readonly DEFAULT_LIBRARY_ENTRY: string = "index.js";
 
+	private static readonly DEFAULT_TYPES_FOLDER: string = "@types";
+
 	/**
 	 * The default allowed file extensions when resolving files.
 	 * @type {string[]}
 	 */
-	private static readonly DEFAULT_ALLOWED_EXTENSIONS: string[] = [".ts", ".tsx", ".js", ".json"];
+	private static readonly DEFAULT_ALLOWED_EXTENSIONS: string[] = [".ts", ".tsx", ".js", ".json", ".d.ts"];
 
 	/**
 	 * The default excluded file extensions when resolving files.
 	 * @type {string[]}
 	 */
-	private static readonly DEFAULT_EXCLUDED_EXTENSIONS: string[] = [".d.ts"];
+	private static readonly DEFAULT_EXCLUDED_EXTENSIONS: string[] = [];
 
 	/**
 	 * The default package fields to resolve libraries from.
@@ -302,7 +304,14 @@ export class ModuleUtil implements IModuleUtil {
 
 		// Make sure that the file/directory in fact exists.
 		if (!this.fileLoader.existsSync(from)) {
-			throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}`);
+			if (from.includes(ModuleUtil.DEFAULT_TYPES_FOLDER)) {
+				throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}`);
+			} else {
+				// It may be within the '@types' folder inside node_modules
+				const file = this.pathUtil.takeFilename(from);
+				const oneUp = join(from, "../", ModuleUtil.DEFAULT_TYPES_FOLDER, file);
+				return this.traceUp(target, oneUp);
+			}
 		}
 
 		// Recursively get all file names within the directory
@@ -340,7 +349,7 @@ export class ModuleUtil implements IModuleUtil {
 			candidate = packageJson[field];
 			if (candidate != null) break;
 		}
-		if (candidate == null) candidate = ModuleUtil.DEFAULT_LIBRARY_ENTRY;
+		if (candidate == null || candidate === "") candidate = this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY);
 		return join(packageJsonPath, "../", candidate);
 	}
 }

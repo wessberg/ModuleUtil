@@ -22,6 +22,10 @@ export class ModuleUtil implements IModuleUtil {
 	 */
 	private static readonly DEFAULT_LIBRARY_ENTRY: string = "index.js";
 
+	/**
+	 * The folder where Typescript stores type declarations
+	 * @type {string}
+	 */
 	private static readonly DEFAULT_TYPES_FOLDER: string = "@types";
 
 	/**

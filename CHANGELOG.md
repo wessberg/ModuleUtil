@@ -1,3 +1,12 @@
+<a name="0.0.14"></a>
+## 0.0.14 (2017-08-28)
+
+* 0.0.14 ([ebbf9c4](https://github.com/wessberg/ModuleUtil/commit/ebbf9c4))
+* Better resolving ([b7e5d1c](https://github.com/wessberg/ModuleUtil/commit/b7e5d1c))
+* Bumped version ([e9fa79f](https://github.com/wessberg/ModuleUtil/commit/e9fa79f))
+
+
+
 <a name="0.0.13"></a>
 ## 0.0.13 (2017-08-28)
 

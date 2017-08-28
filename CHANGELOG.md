@@ -1,3 +1,12 @@
+<a name="0.0.13"></a>
+## 0.0.13 (2017-08-28)
+
+* 0.0.13 ([db18168](https://github.com/wessberg/ModuleUtil/commit/db18168))
+* Added a comment ([9ef1a83](https://github.com/wessberg/ModuleUtil/commit/9ef1a83))
+* Bumped version ([914379c](https://github.com/wessberg/ModuleUtil/commit/914379c))
+
+
+
 <a name="0.0.12"></a>
 ## 0.0.12 (2017-08-28)
 

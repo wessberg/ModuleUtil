@@ -1,3 +1,12 @@
+<a name="0.0.15"></a>
+## 0.0.15 (2017-08-28)
+
+* 0.0.15 ([646cf77](https://github.com/wessberg/ModuleUtil/commit/646cf77))
+* Bumped deps ([73b634c](https://github.com/wessberg/ModuleUtil/commit/73b634c))
+* Bumped version ([c60582b](https://github.com/wessberg/ModuleUtil/commit/c60582b))
+
+
+
 <a name="0.0.14"></a>
 ## 0.0.14 (2017-08-28)
 

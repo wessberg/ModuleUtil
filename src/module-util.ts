@@ -297,9 +297,10 @@ export class ModuleUtil implements IModuleUtil {
 	 * Goes "up" the chain of folders and attempts to reach the target file.
 	 * @param {string} target
 	 * @param {string} from
+	 * @param {boolean} [lookingForParentNodeModules=false]
 	 * @returns {string?}
 	 */
-	private traceUp (target: string, from: string): string|undefined {
+	private traceUp (target: string, from: string, lookingForParentNodeModules: boolean = false): string|undefined {
 
 		// Check if the target exists as a direct child of the 'from' path.
 		const withinBase = join(target, from);
@@ -308,13 +309,26 @@ export class ModuleUtil implements IModuleUtil {
 
 		// Make sure that the file/directory in fact exists.
 		if (!this.fileLoader.existsSync(from)) {
-			if (from.includes(ModuleUtil.DEFAULT_TYPES_FOLDER)) {
+			const file = this.pathUtil.takeFilename(from);
+
+			if (from === "/" || from === `/${target}`) {
 				throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}`);
 			} else {
-				// It may be within the '@types' folder inside node_modules
-				const file = this.pathUtil.takeFilename(from);
-				const oneUp = join(from, "../", ModuleUtil.DEFAULT_TYPES_FOLDER, file);
-				return this.traceUp(target, oneUp);
+				if (!lookingForParentNodeModules && !from.includes(ModuleUtil.DEFAULT_TYPES_FOLDER)) {
+					// It may be within the '@types' folder inside node_modules
+					const oneUp = join(from, "../", ModuleUtil.DEFAULT_TYPES_FOLDER, file);
+					if (oneUp === "/" || oneUp === `/${file}`) {
+						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}/${target}`);
+					}
+					return this.traceUp(target, oneUp);
+				} else {
+					// Otherwise, it may be inside a node_modules folder in a parent directory
+					const oneUp = join(from, "../../", file);
+					if (oneUp === "/" || oneUp === `/${file}`) {
+						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}/${target}`);
+					}
+					return this.traceUp(target, oneUp, true);
+				}
 			}
 		}
 

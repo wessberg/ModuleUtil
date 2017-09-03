@@ -218,16 +218,13 @@ export class ModuleUtil implements IModuleUtil {
 	private findFullPath (absolutePath: string): string {
 		const errorMessage = `${this.constructor.name} could not find a file on disk with the path: ${absolutePath}`;
 
-		// If it isn't a directory and the file already has an extension (and it isn't excluded and is one of the supported ones), return that one if it exists.
-		if (!this.fileLoader.isDirectorySync(absolutePath) && this.pathUtil.hasExtension(absolutePath) && this.allowedExtensions.has(this.pathUtil.takeExtension(absolutePath)) && !this.excludedExtensions.has(this.pathUtil.takeExtension(absolutePath))) {
-			if (!this.fileLoader.existsSync(absolutePath)) {
-				throw new ReferenceError(errorMessage);
-			}
+		// If it isn't a directory and the file already exists, return that one
+		if (!this.fileLoader.isDirectorySync(absolutePath) && this.fileLoader.existsSync(absolutePath)) {
 			return absolutePath;
 		}
 
 		// Otherwise, try to locate it on disk
-		const [exists, path] = this.fileLoader.existsWithFirstMatchedExtensionSync(absolutePath, this.allowedExtensions, this.excludedExtensions);
+		const [exists, path] = this.fileLoader.existsWithFirstMatchedExtensionSync(this.pathUtil.clearExtension(absolutePath), this.allowedExtensions, this.excludedExtensions);
 
 		if (!exists) {
 			// See if an 'index' exists within that path.

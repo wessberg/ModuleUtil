@@ -1,3 +1,12 @@
+<a name="0.0.16"></a>
+## 0.0.16 (2017-09-03)
+
+* 0.0.16 ([6c83d25](https://github.com/wessberg/ModuleUtil/commit/6c83d25))
+* Bumped version ([1c0c199](https://github.com/wessberg/ModuleUtil/commit/1c0c199))
+* Revamped relative path logic ([ac84224](https://github.com/wessberg/ModuleUtil/commit/ac84224))
+
+
+
 <a name="0.0.15"></a>
 ## 0.0.15 (2017-08-28)
 

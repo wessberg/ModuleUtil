@@ -1,3 +1,12 @@
+<a name="0.0.17"></a>
+## 0.0.17 (2017-09-04)
+
+* 0.0.17 ([cc28c44](https://github.com/wessberg/ModuleUtil/commit/cc28c44))
+* Bumped version ([6ac4cab](https://github.com/wessberg/ModuleUtil/commit/6ac4cab))
+* Fixed a bug ([a0bc835](https://github.com/wessberg/ModuleUtil/commit/a0bc835))
+
+
+
 <a name="0.0.16"></a>
 ## 0.0.16 (2017-09-03)
 

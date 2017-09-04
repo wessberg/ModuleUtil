@@ -300,7 +300,7 @@ export class ModuleUtil implements IModuleUtil {
 	private traceUp (target: string, from: string, lookingForParentNodeModules: boolean = false): string|undefined {
 
 		// Check if the target exists as a direct child of the 'from' path.
-		const withinBase = join(target, from);
+		const withinBase = join(from, target);
 		// If it exists, return it.
 		if (this.fileLoader.existsSync(withinBase)) return withinBase;
 

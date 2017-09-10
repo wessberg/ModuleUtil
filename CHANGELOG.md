@@ -1,3 +1,12 @@
+<a name="0.0.18"></a>
+## 0.0.18 (2017-09-10)
+
+* 0.0.18 ([02e95b3](https://github.com/wessberg/ModuleUtil/commit/02e95b3))
+* Bumped version ([5b78438](https://github.com/wessberg/ModuleUtil/commit/5b78438))
+* Fixed a bug where files with a suffix of '.*' before an extension would throw ([14372ae](https://github.com/wessberg/ModuleUtil/commit/14372ae))
+
+
+
 <a name="0.0.17"></a>
 ## 0.0.17 (2017-09-04)
 

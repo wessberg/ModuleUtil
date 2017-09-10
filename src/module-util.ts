@@ -176,6 +176,72 @@ export class ModuleUtil implements IModuleUtil {
 	}
 
 	/**
+	 * Checks if a file exists with an extension suffixed to it
+	 * @param {string} path
+	 * @returns {string}
+	 */
+	private existsWithExtension (path: string): string|null {
+		// Check if it exists with an extension added to it. It may be a filename such as 'foo.model' where '.model' is not the actual extension, but rather a prefix
+		const [exists, existsPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(path, this.allowedExtensions, this.excludedExtensions);
+
+		if (!exists) {
+			// See if an 'index' exists within that path.
+			return this.indexExists(path);
+		}
+
+		// Otherwise, return the path
+		return existsPath!;
+	}
+
+	/**
+	 * Checks if an index file exists within the same directory as the path
+	 * @param {string} path
+	 * @returns {string}
+	 */
+	private indexExists (path: string): string|null {
+		// See if an 'index' exists within that path.
+		const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(path, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
+
+		// If it does, return it.
+		if (indexExists) return indexPath!;
+		return null;
+	}
+
+	/**
+	 * Checks if a path exists with a cleared extension
+	 * @param {string} path
+	 * @returns {string}
+	 */
+	private existsWithClearedExtension (path: string): string|null {
+		const [exists, existsPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(this.pathUtil.clearExtension(path), this.allowedExtensions, this.excludedExtensions);
+
+		if (!exists) {
+			// See if an 'index' exists within that path.
+			return this.indexExists(path);
+		}
+
+		// Otherwise, return the path
+		return existsPath!;
+	}
+
+	/**
+	 * Checks if a file exists. If the file doesn't exist as it is given, it will try to clear its current extension and test for all supported extensions.
+	 * If it fails, it will suffix all of the supported extensions instead, without clearing any existing extension.
+	 * @param {string} path
+	 * @returns {string}
+	 */
+	private fileExists (path: string): string|null {
+		// If it isn't a directory and the file already exists, return that one
+		if (!this.fileLoader.isDirectorySync(path) && this.fileLoader.existsSync(path)) {
+			return path;
+		}
+		const withoutExtension = this.existsWithClearedExtension(path);
+		if (withoutExtension != null) return withoutExtension;
+
+		return this.existsWithExtension(path);
+	}
+
+	/**
 	 * Traces a full path from the given path. It may be so already, but it may also be relative to the wrong directory and need to be resolved.
 	 * @param {string} filePath
 	 * @param {string} from
@@ -218,27 +284,14 @@ export class ModuleUtil implements IModuleUtil {
 	private findFullPath (absolutePath: string): string {
 		const errorMessage = `${this.constructor.name} could not find a file on disk with the path: ${absolutePath}`;
 
-		// If it isn't a directory and the file already exists, return that one
-		if (!this.fileLoader.isDirectorySync(absolutePath) && this.fileLoader.existsSync(absolutePath)) {
-			return absolutePath;
-		}
-
 		// Otherwise, try to locate it on disk
-		const [exists, path] = this.fileLoader.existsWithFirstMatchedExtensionSync(this.pathUtil.clearExtension(absolutePath), this.allowedExtensions, this.excludedExtensions);
-
-		if (!exists) {
-			// See if an 'index' exists within that path.
-			const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(absolutePath, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
-
-			// If it does, return it.
-			if (indexExists) return indexPath!;
-
-			// Otherwise, throw an exception.
+		const path = this.fileExists(absolutePath);
+		if (path == null) {
 			throw new ReferenceError(errorMessage);
 		}
 
 		// Otherwise, return the path
-		return path!;
+		return path;
 	}
 
 	/**

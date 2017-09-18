@@ -1,3 +1,12 @@
+<a name="0.0.20"></a>
+## 0.0.20 (2017-09-18)
+
+* 0.0.20 ([10497f0](https://github.com/wessberg/ModuleUtil/commit/10497f0))
+* Bumped version ([4e08c87](https://github.com/wessberg/ModuleUtil/commit/4e08c87))
+* Made sure to set initial options ([deb8875](https://github.com/wessberg/ModuleUtil/commit/deb8875))
+
+
+
 <a name="0.0.19"></a>
 ## 0.0.19 (2017-09-18)
 

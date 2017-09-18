@@ -1,8 +1,8 @@
-import {IModuleUtil} from "./i-module-util";
 import {IFileLoader} from "@wessberg/fileloader";
-import {IModuleUtilOptions} from "./i-module-util-options";
 import {IPathUtil} from "@wessberg/pathutil";
 import {join} from "path";
+import {IModuleUtil} from "./i-module-util";
+import {IModuleUtilOptions} from "./i-module-util-options";
 import {IPackageJson} from "./i-package-json";
 
 /**
@@ -55,26 +55,32 @@ export class ModuleUtil implements IModuleUtil {
 	 * The total amount of built in modules
 	 * @type {Set<string>}
 	 */
-	public readonly builtInModules: Set<string>;
+	public builtInModules: Set<string>;
 	/**
 	 * The allowed file extensions when resolving files.
 	 * @type {Set<string>}
 	 */
-	private readonly allowedExtensions: Set<string>;
+	private allowedExtensions: Set<string>;
 	/**
 	 * The excluded file extensions when resolving files.
 	 * @type {Set<string>}
 	 */
-	private readonly excludedExtensions: Set<string>;
+	private excludedExtensions: Set<string>;
 	/**
 	 * The package fields to resolve libraries from
 	 * @type {Set<string>}
 	 */
-	private readonly packageFields: Set<keyof IPackageJson>;
+	private packageFields: Set<keyof IPackageJson>;
 
 	constructor (private fileLoader: IFileLoader,
-							 private pathUtil: IPathUtil,
-							 options?: Partial<IModuleUtilOptions>) {
+							 private pathUtil: IPathUtil) {
+	}
+
+	/**
+	 * Sets proper options for the ModuleUtil
+	 * @param {Partial<IModuleUtilOptions>} options
+	 */
+	public setOptions (options?: Partial<IModuleUtilOptions>): void {
 		this.allowedExtensions = new Set([...ModuleUtil.DEFAULT_ALLOWED_EXTENSIONS, ...this.takeExtraExtensions(options)]);
 		this.excludedExtensions = new Set(ModuleUtil.DEFAULT_EXCLUDED_EXTENSIONS);
 		this.packageFields = new Set([...ModuleUtil.DEFAULT_PACKAGE_FIELDS, ...this.takeExtraPackageFields(options)]);
@@ -162,7 +168,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {string} libDirectory
 	 * @returns {string?}
 	 */
-	private resolvePackageJson (libDirectory: string): string|undefined {
+	private resolvePackageJson (libDirectory: string): string | undefined {
 		return this.traceUp("package.json", libDirectory);
 	}
 
@@ -180,7 +186,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	private existsWithExtension (path: string): string|null {
+	private existsWithExtension (path: string): string | null {
 		// Check if it exists with an extension added to it. It may be a filename such as 'foo.model' where '.model' is not the actual extension, but rather a prefix
 		const [exists, existsPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(path, this.allowedExtensions, this.excludedExtensions);
 
@@ -198,7 +204,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	private indexExists (path: string): string|null {
+	private indexExists (path: string): string | null {
 		// See if an 'index' exists within that path.
 		const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(path, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
 
@@ -212,7 +218,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	private existsWithClearedExtension (path: string): string|null {
+	private existsWithClearedExtension (path: string): string | null {
 		const [exists, existsPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(this.pathUtil.clearExtension(path), this.allowedExtensions, this.excludedExtensions);
 
 		if (!exists) {
@@ -230,7 +236,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {string} path
 	 * @returns {string}
 	 */
-	private fileExists (path: string): string|null {
+	private fileExists (path: string): string | null {
 		// If it isn't a directory and the file already exists, return that one
 		if (!this.fileLoader.isDirectorySync(path) && this.fileLoader.existsSync(path)) {
 			return path;
@@ -330,9 +336,9 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {string} current
 	 * @returns {string}
 	 */
-	private traceDown (target: string, current: string): string|null {
+	private traceDown (target: string, current: string): string | null {
 		let _current = current;
-		let targetPath: string|null = null;
+		let targetPath: string | null = null;
 		while (_current !== "/") {
 			targetPath = join(_current, target);
 			const hasTarget = this.fileLoader.existsSync(targetPath);
@@ -350,7 +356,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {boolean} [lookingForParentNodeModules=false]
 	 * @returns {string?}
 	 */
-	private traceUp (target: string, from: string, lookingForParentNodeModules: boolean = false): string|undefined {
+	private traceUp (target: string, from: string, lookingForParentNodeModules: boolean = false): string | undefined {
 
 		// Check if the target exists as a direct child of the 'from' path.
 		const withinBase = join(from, target);
@@ -412,7 +418,7 @@ export class ModuleUtil implements IModuleUtil {
 	 * @returns {IPackageJson}
 	 */
 	private takeLibEntryPathFromPackage (packageJson: IPackageJson, packageJsonPath: string): string {
-		let candidate: string|null = null;
+		let candidate: string | null = null;
 		for (const field of this.packageFields) {
 			candidate = packageJson[field];
 			if (candidate != null) break;

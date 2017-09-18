@@ -74,6 +74,7 @@ export class ModuleUtil implements IModuleUtil {
 
 	constructor (private fileLoader: IFileLoader,
 							 private pathUtil: IPathUtil) {
+		this.setOptions();
 	}
 
 	/**

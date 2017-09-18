@@ -1,3 +1,12 @@
+<a name="0.0.19"></a>
+## 0.0.19 (2017-09-18)
+
+* 0.0.19 ([73ee6a9](https://github.com/wessberg/ModuleUtil/commit/73ee6a9))
+* Bumped version ([37241e5](https://github.com/wessberg/ModuleUtil/commit/37241e5))
+* Options may now be set from a method, - not from the constructor. This is to be able to dependency-i ([910153e](https://github.com/wessberg/ModuleUtil/commit/910153e))
+
+
+
 <a name="0.0.18"></a>
 ## 0.0.18 (2017-09-10)
 

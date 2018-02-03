@@ -1,5 +1,14 @@
+<a name="0.0.21"></a>
+## <small>0.0.21 (2018-02-03)</small>
+
+* 0.0.21 ([448ef9d](https://github.com/wessberg/ModuleUtil/commit/448ef9d))
+* Bumped deps ([20efb42](https://github.com/wessberg/ModuleUtil/commit/20efb42))
+* Bumped version ([0cc82b0](https://github.com/wessberg/ModuleUtil/commit/0cc82b0))
+
+
+
 <a name="0.0.20"></a>
-## 0.0.20 (2017-09-18)
+## <small>0.0.20 (2017-09-18)</small>
 
 * 0.0.20 ([10497f0](https://github.com/wessberg/ModuleUtil/commit/10497f0))
 * Bumped version ([4e08c87](https://github.com/wessberg/ModuleUtil/commit/4e08c87))
@@ -8,7 +17,7 @@
 
 
 <a name="0.0.19"></a>
-## 0.0.19 (2017-09-18)
+## <small>0.0.19 (2017-09-18)</small>
 
 * 0.0.19 ([73ee6a9](https://github.com/wessberg/ModuleUtil/commit/73ee6a9))
 * Bumped version ([37241e5](https://github.com/wessberg/ModuleUtil/commit/37241e5))
@@ -17,7 +26,7 @@
 
 
 <a name="0.0.18"></a>
-## 0.0.18 (2017-09-10)
+## <small>0.0.18 (2017-09-10)</small>
 
 * 0.0.18 ([02e95b3](https://github.com/wessberg/ModuleUtil/commit/02e95b3))
 * Bumped version ([5b78438](https://github.com/wessberg/ModuleUtil/commit/5b78438))
@@ -26,7 +35,7 @@
 
 
 <a name="0.0.17"></a>
-## 0.0.17 (2017-09-04)
+## <small>0.0.17 (2017-09-04)</small>
 
 * 0.0.17 ([cc28c44](https://github.com/wessberg/ModuleUtil/commit/cc28c44))
 * Bumped version ([6ac4cab](https://github.com/wessberg/ModuleUtil/commit/6ac4cab))
@@ -35,7 +44,7 @@
 
 
 <a name="0.0.16"></a>
-## 0.0.16 (2017-09-03)
+## <small>0.0.16 (2017-09-03)</small>
 
 * 0.0.16 ([6c83d25](https://github.com/wessberg/ModuleUtil/commit/6c83d25))
 * Bumped version ([1c0c199](https://github.com/wessberg/ModuleUtil/commit/1c0c199))
@@ -44,7 +53,7 @@
 
 
 <a name="0.0.15"></a>
-## 0.0.15 (2017-08-28)
+## <small>0.0.15 (2017-08-28)</small>
 
 * 0.0.15 ([646cf77](https://github.com/wessberg/ModuleUtil/commit/646cf77))
 * Bumped deps ([73b634c](https://github.com/wessberg/ModuleUtil/commit/73b634c))
@@ -53,7 +62,7 @@
 
 
 <a name="0.0.14"></a>
-## 0.0.14 (2017-08-28)
+## <small>0.0.14 (2017-08-28)</small>
 
 * 0.0.14 ([ebbf9c4](https://github.com/wessberg/ModuleUtil/commit/ebbf9c4))
 * Better resolving ([b7e5d1c](https://github.com/wessberg/ModuleUtil/commit/b7e5d1c))
@@ -62,7 +71,7 @@
 
 
 <a name="0.0.13"></a>
-## 0.0.13 (2017-08-28)
+## <small>0.0.13 (2017-08-28)</small>
 
 * 0.0.13 ([db18168](https://github.com/wessberg/ModuleUtil/commit/db18168))
 * Added a comment ([9ef1a83](https://github.com/wessberg/ModuleUtil/commit/9ef1a83))
@@ -71,7 +80,7 @@
 
 
 <a name="0.0.12"></a>
-## 0.0.12 (2017-08-28)
+## <small>0.0.12 (2017-08-28)</small>
 
 * . ([c9f04bd](https://github.com/wessberg/ModuleUtil/commit/c9f04bd))
 * 0.0.12 ([0ddf903](https://github.com/wessberg/ModuleUtil/commit/0ddf903))
@@ -81,7 +90,7 @@
 
 
 <a name="0.0.11"></a>
-## 0.0.11 (2017-08-20)
+## <small>0.0.11 (2017-08-20)</small>
 
 * 0.0.11 ([270d288](https://github.com/wessberg/ModuleUtil/commit/270d288))
 * Bumped dependency on Typescript ([ce131b0](https://github.com/wessberg/ModuleUtil/commit/ce131b0))
@@ -90,7 +99,7 @@
 
 
 <a name="0.0.10"></a>
-## 0.0.10 (2017-08-18)
+## <small>0.0.10 (2017-08-18)</small>
 
 * 0.0.10 ([2f11351](https://github.com/wessberg/ModuleUtil/commit/2f11351))
 * Bumped version ([f230643](https://github.com/wessberg/ModuleUtil/commit/f230643))
@@ -99,7 +108,7 @@
 
 
 <a name="0.0.9"></a>
-## 0.0.9 (2017-08-18)
+## <small>0.0.9 (2017-08-18)</small>
 
 * 0.0.9 ([2272241](https://github.com/wessberg/ModuleUtil/commit/2272241))
 * Bumped version ([1a1a88e](https://github.com/wessberg/ModuleUtil/commit/1a1a88e))
@@ -107,7 +116,7 @@
 
 
 <a name="0.0.8"></a>
-## 0.0.8 (2017-08-18)
+## <small>0.0.8 (2017-08-18)</small>
 
 * 0.0.8 ([b186818](https://github.com/wessberg/ModuleUtil/commit/b186818))
 * Bumped version ([c7a84f8](https://github.com/wessberg/ModuleUtil/commit/c7a84f8))
@@ -116,7 +125,7 @@
 
 
 <a name="0.0.7"></a>
-## 0.0.7 (2017-08-18)
+## <small>0.0.7 (2017-08-18)</small>
 
 * 0.0.7 ([a78938b](https://github.com/wessberg/ModuleUtil/commit/a78938b))
 * Added 'constants' as a known builtin module ([5cf1800](https://github.com/wessberg/ModuleUtil/commit/5cf1800))
@@ -126,7 +135,7 @@
 
 
 <a name="0.0.6"></a>
-## 0.0.6 (2017-08-18)
+## <small>0.0.6 (2017-08-18)</small>
 
 * 0.0.6 ([b8756fb](https://github.com/wessberg/ModuleUtil/commit/b8756fb))
 * Added 'module' as a known built-in ([8b684dd](https://github.com/wessberg/ModuleUtil/commit/8b684dd))
@@ -135,7 +144,7 @@
 
 
 <a name="0.0.5"></a>
-## 0.0.5 (2017-08-18)
+## <small>0.0.5 (2017-08-18)</small>
 
 * 0.0.5 ([eebbc6d](https://github.com/wessberg/ModuleUtil/commit/eebbc6d))
 * Added .tsx as default allowed extension ([2129f8e](https://github.com/wessberg/ModuleUtil/commit/2129f8e))
@@ -144,7 +153,7 @@
 
 
 <a name="0.0.4"></a>
-## 0.0.4 (2017-08-18)
+## <small>0.0.4 (2017-08-18)</small>
 
 * 0.0.4 ([d4cb66a](https://github.com/wessberg/ModuleUtil/commit/d4cb66a))
 * Added a missing typing ([1f08756](https://github.com/wessberg/ModuleUtil/commit/1f08756))
@@ -154,7 +163,7 @@
 
 
 <a name="0.0.3"></a>
-## 0.0.3 (2017-08-18)
+## <small>0.0.3 (2017-08-18)</small>
 
 * 0.0.3 ([75e8e66](https://github.com/wessberg/ModuleUtil/commit/75e8e66))
 * Bumped version ([41b6d84](https://github.com/wessberg/ModuleUtil/commit/41b6d84))
@@ -163,7 +172,7 @@
 
 
 <a name="0.0.2"></a>
-## 0.0.2 (2017-08-18)
+## <small>0.0.2 (2017-08-18)</small>
 
 * 0.0.2 ([ea859fe](https://github.com/wessberg/ModuleUtil/commit/ea859fe))
 * Added changelog ([21ee1c9](https://github.com/wessberg/ModuleUtil/commit/21ee1c9))
@@ -172,7 +181,7 @@
 
 
 <a name="0.0.1"></a>
-## 0.0.1 (2017-08-17)
+## <small>0.0.1 (2017-08-17)</small>
 
 * 0.0.1 ([5951981](https://github.com/wessberg/ModuleUtil/commit/5951981))
 * First commit ([a5aacb6](https://github.com/wessberg/ModuleUtil/commit/a5aacb6))

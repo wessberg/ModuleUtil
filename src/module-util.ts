@@ -72,8 +72,8 @@ export class ModuleUtil implements IModuleUtil {
 	 */
 	private packageFields: Set<keyof IPackageJson>;
 
-	constructor (private fileLoader: IFileLoader,
-							 private pathUtil: IPathUtil) {
+	constructor (private readonly fileLoader: IFileLoader,
+							 private readonly pathUtil: IPathUtil) {
 		this.setOptions();
 	}
 

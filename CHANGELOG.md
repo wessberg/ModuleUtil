@@ -1,3 +1,12 @@
+<a name="0.0.22"></a>
+## <small>0.0.22 (2018-03-31)</small>
+
+* 0.0.22 ([56d9a2c](https://github.com/wessberg/ModuleUtil/commit/56d9a2c))
+* Bumped deps. Made it possible to construct a new ModuleUtil without dependency injection ([7b75e22](https://github.com/wessberg/ModuleUtil/commit/7b75e22))
+* Bumped version ([7cc9320](https://github.com/wessberg/ModuleUtil/commit/7cc9320))
+
+
+
 <a name="0.0.21"></a>
 ## <small>0.0.21 (2018-02-03)</small>
 

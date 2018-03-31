@@ -1,14 +1,14 @@
 import {IFileLoader} from "@wessberg/fileloader";
 import {IPathUtil} from "@wessberg/pathutil";
 import {join} from "path";
-import {IModuleUtil} from "./i-module-util";
+import {IModuleUtilHost} from "./i-module-util-host";
 import {IModuleUtilOptions} from "./i-module-util-options";
 import {IPackageJson} from "./i-package-json";
 
 /**
  * A class that helps with working with modules
  */
-export class ModuleUtil implements IModuleUtil {
+export class ModuleUtilHost implements IModuleUtilHost {
 
 	/**
 	 * A Map between paths as they are passed on to the ModuleUtil and actual file paths on disk.
@@ -82,10 +82,10 @@ export class ModuleUtil implements IModuleUtil {
 	 * @param {Partial<IModuleUtilOptions>} options
 	 */
 	public setOptions (options?: Partial<IModuleUtilOptions>): void {
-		this.allowedExtensions = new Set([...ModuleUtil.DEFAULT_ALLOWED_EXTENSIONS, ...this.takeExtraExtensions(options)]);
-		this.excludedExtensions = new Set(ModuleUtil.DEFAULT_EXCLUDED_EXTENSIONS);
-		this.packageFields = new Set([...ModuleUtil.DEFAULT_PACKAGE_FIELDS, ...this.takeExtraPackageFields(options)]);
-		this.builtInModules = new Set([...ModuleUtil.DEFAULT_BUILT_IN_MODULES, ...this.takeExtraBuiltInModules(options)]);
+		this.allowedExtensions = new Set([...ModuleUtilHost.DEFAULT_ALLOWED_EXTENSIONS, ...this.takeExtraExtensions(options)]);
+		this.excludedExtensions = new Set(ModuleUtilHost.DEFAULT_EXCLUDED_EXTENSIONS);
+		this.packageFields = new Set([...ModuleUtilHost.DEFAULT_PACKAGE_FIELDS, ...this.takeExtraPackageFields(options)]);
+		this.builtInModules = new Set([...ModuleUtilHost.DEFAULT_BUILT_IN_MODULES, ...this.takeExtraBuiltInModules(options)]);
 	}
 
 	/**
@@ -112,18 +112,18 @@ export class ModuleUtil implements IModuleUtil {
 		const directory = this.resolveNodeModuleDirectory(libName, from);
 
 		// Even though a directory may exist with this name, there may be a file within the same directory of the same name
-		const [scriptExists, scriptPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(directory, this.allowedExtensions, this.excludedExtensions);
-		if (scriptExists) return scriptPath!;
+		const scriptPath = this.fileLoader.getWithFirstMatchedExtensionSync(directory, this.allowedExtensions, this.excludedExtensions);
+		if (scriptPath != null) return scriptPath;
 
 		const packageJSONPath = this.resolvePackageJson(directory);
 
 		// If no package.json file were found, look for an index file within the directory.
 		if (packageJSONPath == null) {
 			// See if an 'index' exists within that path.
-			const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(directory, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
+			const indexPath = this.fileLoader.getWithFirstMatchedExtensionSync(join(directory, this.pathUtil.clearExtension(ModuleUtilHost.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
 
 			// If it does, return it.
-			if (indexExists) return indexPath!;
+			if (indexPath != null) return indexPath;
 			else {
 				// Otherwise throw an error.
 				throw new ReferenceError(`${this.constructor.name} could not find a package.json file within directory: ${directory}`);
@@ -137,11 +137,11 @@ export class ModuleUtil implements IModuleUtil {
 		}
 
 		// Otherwise, walk through all extensions and return the first one that exists
-		const [exists, path] = this.fileLoader.existsWithFirstMatchedExtensionSync(entry, this.allowedExtensions, this.excludedExtensions);
-		if (!exists) {
+		const path = this.fileLoader.getWithFirstMatchedExtensionSync(entry, this.allowedExtensions, this.excludedExtensions);
+		if (path == null) {
 			throw new ReferenceError(`${this.constructor.name} found no file on disk that matches the entry provided in a package.json file: ${entry}`);
 		}
-		return path!;
+		return path;
 	}
 
 	/**
@@ -189,15 +189,15 @@ export class ModuleUtil implements IModuleUtil {
 	 */
 	private existsWithExtension (path: string): string | null {
 		// Check if it exists with an extension added to it. It may be a filename such as 'foo.model' where '.model' is not the actual extension, but rather a prefix
-		const [exists, existsPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(path, this.allowedExtensions, this.excludedExtensions);
+		const existsPath = this.fileLoader.getWithFirstMatchedExtensionSync(path, this.allowedExtensions, this.excludedExtensions);
 
-		if (!exists) {
+		if (existsPath == null) {
 			// See if an 'index' exists within that path.
 			return this.indexExists(path);
 		}
 
 		// Otherwise, return the path
-		return existsPath!;
+		return existsPath;
 	}
 
 	/**
@@ -207,10 +207,10 @@ export class ModuleUtil implements IModuleUtil {
 	 */
 	private indexExists (path: string): string | null {
 		// See if an 'index' exists within that path.
-		const [indexExists, indexPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(join(path, this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
+		const indexPath = this.fileLoader.getWithFirstMatchedExtensionSync(join(path, this.pathUtil.clearExtension(ModuleUtilHost.DEFAULT_LIBRARY_ENTRY)), this.allowedExtensions, this.excludedExtensions);
 
 		// If it does, return it.
-		if (indexExists) return indexPath!;
+		if (indexPath != null) return indexPath;
 		return null;
 	}
 
@@ -220,15 +220,15 @@ export class ModuleUtil implements IModuleUtil {
 	 * @returns {string}
 	 */
 	private existsWithClearedExtension (path: string): string | null {
-		const [exists, existsPath] = this.fileLoader.existsWithFirstMatchedExtensionSync(this.pathUtil.clearExtension(path), this.allowedExtensions, this.excludedExtensions);
+		const existsPath = this.fileLoader.getWithFirstMatchedExtensionSync(this.pathUtil.clearExtension(path), this.allowedExtensions, this.excludedExtensions);
 
-		if (!exists) {
+		if (existsPath == null) {
 			// See if an 'index' exists within that path.
 			return this.indexExists(path);
 		}
 
 		// Otherwise, return the path
-		return existsPath!;
+		return existsPath;
 	}
 
 	/**
@@ -258,28 +258,28 @@ export class ModuleUtil implements IModuleUtil {
 		// If the filePath is a directory, expect it to point to a library within node_modules.
 		if (this.pathUtil.isLib(filePath)) {
 			// See if exists within the cache first
-			const cachedLib = ModuleUtil.RESOLVED_PATHS.get(filePath);
+			const cachedLib = ModuleUtilHost.RESOLVED_PATHS.get(filePath);
 			if (cachedLib != null) return cachedLib;
 
 			// Trace the full path
 			const tracedLib = this.traceLib(filePath, from);
 
 			// Cache it
-			ModuleUtil.RESOLVED_PATHS.set(filePath, tracedLib);
+			ModuleUtilHost.RESOLVED_PATHS.set(filePath, tracedLib);
 		}
 
 		// Make sure that the path is absolute
 		const absolute = this.pathUtil.makeAbsolute(filePath, from, true);
 
 		// See if exists within the cache first
-		const cachedFullPath = ModuleUtil.RESOLVED_PATHS.get(absolute);
+		const cachedFullPath = ModuleUtilHost.RESOLVED_PATHS.get(absolute);
 		if (cachedFullPath != null) return cachedFullPath;
 
 		// Trace the full path
 		const tracedFullPath = this.findFullPath(absolute);
 
 		// Cache it
-		ModuleUtil.RESOLVED_PATHS.set(absolute, tracedFullPath);
+		ModuleUtilHost.RESOLVED_PATHS.set(absolute, tracedFullPath);
 		return tracedFullPath;
 	}
 
@@ -371,9 +371,9 @@ export class ModuleUtil implements IModuleUtil {
 			if (from === "/" || from === `/${target}`) {
 				throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}`);
 			} else {
-				if (!lookingForParentNodeModules && !from.includes(ModuleUtil.DEFAULT_TYPES_FOLDER)) {
+				if (!lookingForParentNodeModules && !from.includes(ModuleUtilHost.DEFAULT_TYPES_FOLDER)) {
 					// It may be within the '@types' folder inside node_modules
-					const oneUp = join(from, "../", ModuleUtil.DEFAULT_TYPES_FOLDER, file);
+					const oneUp = join(from, "../", ModuleUtilHost.DEFAULT_TYPES_FOLDER, file);
 					if (oneUp === "/" || oneUp === `/${file}`) {
 						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}/${target}`);
 					}
@@ -424,7 +424,7 @@ export class ModuleUtil implements IModuleUtil {
 			candidate = packageJson[field];
 			if (candidate != null) break;
 		}
-		if (candidate == null || candidate === "") candidate = this.pathUtil.clearExtension(ModuleUtil.DEFAULT_LIBRARY_ENTRY);
+		if (candidate == null || candidate === "") candidate = this.pathUtil.clearExtension(ModuleUtilHost.DEFAULT_LIBRARY_ENTRY);
 		return join(packageJsonPath, "../", candidate);
 	}
 }

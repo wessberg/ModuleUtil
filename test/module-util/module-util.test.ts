@@ -1,11 +1,9 @@
-import {test} from "ava";
-import {ModuleUtil} from "../../src/module-util";
-import {FileLoader} from "@wessberg/fileloader";
-import {PathUtil} from "@wessberg/pathutil";
+import "../../src/services";
 
-const fileLoader = new FileLoader();
-const pathUtil = new PathUtil(fileLoader);
-const moduleUtil = new ModuleUtil(fileLoader, pathUtil);
+import {test} from "ava";
+import {ModuleUtil} from "../../src/module-util/module-util";
+
+const moduleUtil = new ModuleUtil();
 
 test("foo", t => {
 	moduleUtil.resolvePath("./test/static/foo.model");

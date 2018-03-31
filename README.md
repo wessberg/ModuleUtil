@@ -65,8 +65,3 @@ const moduleUtil = new ModuleUtilHost(fileLoader, pathUtil, {
 	extraBuiltInModules: ["some-module", "foo"]
 });
 ```
-
-### Dependencies
-
-ModuleUtilHost is built to fit dependency injection systems. Thus, it requires two services to be constructor-injected: implementations of [IFileLoader](https://github.com/wessberg/fileloader) and [IPathUtil](https://github.com/wessberg/pathutil).
-You can npm-install both of them: `npm install @wessberg/fileloader` and `npm install @wessberg/pathutil` and either pass them on to the constructor or add them to your dependency injection system.

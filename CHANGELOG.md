@@ -1,3 +1,12 @@
+<a name="0.0.23"></a>
+## <small>0.0.23 (2018-03-31)</small>
+
+* 0.0.23 ([d2f93d5](https://github.com/wessberg/ModuleUtil/commit/d2f93d5))
+* Bumped deps ([584b702](https://github.com/wessberg/ModuleUtil/commit/584b702))
+* Bumped version ([5c294b1](https://github.com/wessberg/ModuleUtil/commit/5c294b1))
+
+
+
 <a name="0.0.22"></a>
 ## <small>0.0.22 (2018-03-31)</small>
 

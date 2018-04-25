@@ -1,3 +1,13 @@
+<a name="0.0.24"></a>
+## <small>0.0.24 (2018-04-25)</small>
+
+* 0.0.24 ([5edd792](https://github.com/wessberg/ModuleUtil/commit/5edd792))
+* Added .mjs as a default allowed extension ([5f93d55](https://github.com/wessberg/ModuleUtil/commit/5f93d55))
+* Bumped deps ([9e2b92b](https://github.com/wessberg/ModuleUtil/commit/9e2b92b))
+* Bumped version ([777f5d1](https://github.com/wessberg/ModuleUtil/commit/777f5d1))
+
+
+
 <a name="0.0.23"></a>
 ## <small>0.0.23 (2018-03-31)</small>
 

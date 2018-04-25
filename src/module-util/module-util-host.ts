@@ -32,7 +32,7 @@ export class ModuleUtilHost implements IModuleUtilHost {
 	 * The default allowed file extensions when resolving files.
 	 * @type {string[]}
 	 */
-	private static readonly DEFAULT_ALLOWED_EXTENSIONS: string[] = [".ts", ".tsx", ".js", ".json", ".d.ts"];
+	private static readonly DEFAULT_ALLOWED_EXTENSIONS: string[] = [".ts", ".tsx", ".js", ".mjs", ".json", ".d.ts"];
 
 	/**
 	 * The default excluded file extensions when resolving files.

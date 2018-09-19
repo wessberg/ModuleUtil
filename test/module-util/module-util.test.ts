@@ -7,5 +7,6 @@ const moduleUtil = new ModuleUtil();
 
 test("foo", t => {
 	moduleUtil.resolvePath("./test/static/foo.model");
+	moduleUtil.resolvePath("ansi-align");
 	t.true(true);
 });

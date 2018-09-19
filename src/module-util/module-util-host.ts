@@ -102,20 +102,21 @@ export class ModuleUtilHost implements IModuleUtilHost {
 	 * Traces a library from the given position
 	 * @param {string} libName
 	 * @param {string} from
+	 * @param {string} origFrom
 	 * @returns {string}
 	 */
-	private traceLib (libName: string, from: string): string {
+	private traceLib (libName: string, from: string, origFrom: string = from): string {
 		// If the path is to a built-in module (such as 'fs'), return it immediately.
 		if (this.builtInModules.has(libName)) return libName;
 
 		// Resolve the node_modules directory
-		const directory = this.resolveNodeModuleDirectory(libName, from);
+		const directory = this.resolveNodeModuleDirectory(libName, from, origFrom);
 
 		// Even though a directory may exist with this name, there may be a file within the same directory of the same name
 		const scriptPath = this.fileLoader.getWithFirstMatchedExtensionSync(directory, this.allowedExtensions, this.excludedExtensions);
 		if (scriptPath != null) return scriptPath;
 
-		const packageJSONPath = this.resolvePackageJson(directory);
+		const packageJSONPath = this.resolvePackageJson(directory, origFrom);
 
 		// If no package.json file were found, look for an index file within the directory.
 		if (packageJSONPath == null) {
@@ -148,9 +149,10 @@ export class ModuleUtilHost implements IModuleUtilHost {
 	 * Returns an absolute path to the directory of a library within node_modules.
 	 * @param {string} libName
 	 * @param {string} from
+	 * @param {string} origFrom
 	 * @returns {string}
 	 */
-	private resolveNodeModuleDirectory (libName: string, from: string): string {
+	private resolveNodeModuleDirectory (libName: string, from: string, origFrom: string = from): string {
 		// If the libName already includes 'node_modules', we are satisfied with it.
 		if (libName.includes("node_modules")) return libName;
 
@@ -158,7 +160,7 @@ export class ModuleUtilHost implements IModuleUtilHost {
 		const tracedNodeModules = this.traceDown("node_modules", from);
 
 		// Make sure it is defined
-		if (tracedNodeModules == null) throw new ReferenceError(`${this.constructor.name} could not locate 'node_modules' from ${from}`);
+		if (tracedNodeModules == null) throw new ReferenceError(`${this.constructor.name} could not locate 'node_modules' in neither the local directory nor any parent directory from: '${origFrom}'`);
 
 		// Append the library name (which is essentially the directory of the library) to the path
 		return join(tracedNodeModules, libName);
@@ -167,10 +169,11 @@ export class ModuleUtilHost implements IModuleUtilHost {
 	/**
 	 * Resolves a package.json file within the provided library directory.
 	 * @param {string} libDirectory
+	 * @param {string} origFrom
 	 * @returns {string?}
 	 */
-	private resolvePackageJson (libDirectory: string): string | undefined {
-		return this.traceUp("package.json", libDirectory);
+	private resolvePackageJson (libDirectory: string, origFrom: string): string | undefined {
+		return this.traceUp("package.json", libDirectory, origFrom);
 	}
 
 	/**
@@ -252,9 +255,10 @@ export class ModuleUtilHost implements IModuleUtilHost {
 	 * Traces a full path from the given path. It may be so already, but it may also be relative to the wrong directory and need to be resolved.
 	 * @param {string} filePath
 	 * @param {string} from
+	 * @param {string} origFrom
 	 * @returns {string}
 	 */
-	private traceFullPath (filePath: string, from: string): string {
+	private traceFullPath (filePath: string, from: string, origFrom: string = from): string {
 		// If the filePath is a directory, expect it to point to a library within node_modules.
 		if (this.pathUtil.isLib(filePath)) {
 			// See if exists within the cache first
@@ -262,10 +266,22 @@ export class ModuleUtilHost implements IModuleUtilHost {
 			if (cachedLib != null) return cachedLib;
 
 			// Trace the full path
-			const tracedLib = this.traceLib(filePath, from);
+			try {
+				const tracedLib = this.traceLib(filePath, from, origFrom);
 
-			// Cache it
-			ModuleUtilHost.RESOLVED_PATHS.set(filePath, tracedLib);
+				// Cache it
+				ModuleUtilHost.RESOLVED_PATHS.set(filePath, tracedLib);
+			} catch (ex) {
+				// Attempt again from the parent directory. It is entirely possible that a node_modules folder can be resolved from the parent
+				if (from !== "/") {
+					return this.traceFullPath(filePath, join(from, "../"), origFrom);
+				}
+
+				// Otherwise, re-throw the error
+				else {
+					throw ex;
+				}
+			}
 		}
 
 		// Make sure that the path is absolute
@@ -354,10 +370,11 @@ export class ModuleUtilHost implements IModuleUtilHost {
 	 * Goes "up" the chain of folders and attempts to reach the target file.
 	 * @param {string} target
 	 * @param {string} from
+	 * @param {string} origFrom
 	 * @param {boolean} [lookingForParentNodeModules=false]
 	 * @returns {string?}
 	 */
-	private traceUp (target: string, from: string, lookingForParentNodeModules: boolean = false): string | undefined {
+	private traceUp (target: string, from: string, origFrom: string, lookingForParentNodeModules: boolean = false): string | undefined {
 
 		// Check if the target exists as a direct child of the 'from' path.
 		const withinBase = join(from, target);
@@ -369,22 +386,22 @@ export class ModuleUtilHost implements IModuleUtilHost {
 			const file = this.pathUtil.takeFilename(from);
 
 			if (from === "/" || from === `/${target}`) {
-				throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}`);
+				throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist in neither the local directory nor any parent directory: ${origFrom}`);
 			} else {
 				if (!lookingForParentNodeModules && !from.includes(ModuleUtilHost.DEFAULT_TYPES_FOLDER)) {
 					// It may be within the '@types' folder inside node_modules
 					const oneUp = join(from, "../", ModuleUtilHost.DEFAULT_TYPES_FOLDER, file);
 					if (oneUp === "/" || oneUp === `/${file}`) {
-						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}/${target}`);
+						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist in neither the local directory nor any parent directory: ${origFrom}/${target}`);
 					}
-					return this.traceUp(target, oneUp);
+					return this.traceUp(target, oneUp, origFrom);
 				} else {
 					// Otherwise, it may be inside a node_modules folder in a parent directory
 					const oneUp = join(from, "../../", file);
 					if (oneUp === "/" || oneUp === `/${file}`) {
-						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist: ${from}/${target}`);
+						throw new ReferenceError(`${this.constructor.name} received a path to a package that doesn't exist in neither the local directory nor any parent directory: ${origFrom}/${target}`);
 					}
-					return this.traceUp(target, oneUp, true);
+					return this.traceUp(target, oneUp, origFrom, true);
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 {
 	"name": "@wessberg/moduleutil",
-	"version": "0.0.25",
+	"version": "0.0.26",
 	"description": "A helper class for resolving paths to libraries and modules",
 	"scripts": {
 		"clean:dist": "rm -r -f dist",
